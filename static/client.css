@@ -1,0 +1,323 @@
+:root {
+  --navbarbackground: rgba(0, 0, 0, 0.5);
+}
+
+/* Navbar starts here */
+
+header {
+  font-family: "Helvetica", serif;
+
+  display: grid;
+  background: var(--navbarbackground);
+  text-align: center;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  height: 5rem;
+}
+
+header button {
+  color: white;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  height: 100%;
+  margin-top: auto;
+  text-align: center;
+}
+
+header button:hover {
+  color: yellow;
+}
+
+nav {
+  position: absolute;
+  text-align: left;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: var(--navbarbackground);
+  transform: scale(1, 0);
+
+  transform-origin: top;
+  transition: transform 200ms ease-in-out;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: transparent;
+  display: grid;
+}
+
+nav li {
+  margin-bottom: 1em;
+  margin-left: 1em;
+}
+
+nav button {
+  color: white;
+  border: none;
+  text-decoration: none;
+  padding: 1em;
+  font-size: 1rem;
+  background-color: transparent;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+nav button:hover {
+  color: yellow;
+}
+
+.nav-toggle:checked ~ nav {
+  transform: scale(1, 1);
+}
+
+.nav-toggle:checked ~ nav button {
+  opacity: 1;
+  transition: opacity 200ms ease-in-out 190ms;
+}
+
+.nav-toggle {
+  display: none;
+}
+
+.nav-toggle-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 1em;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.nav-toggle-label span,
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  display: block;
+  background: white;
+  height: 2px;
+  width: 2em;
+  border-radius: 2px;
+  position: relative;
+}
+
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  content: "";
+  position: absolute;
+}
+
+.nav-toggle-label span::before {
+  bottom: 7px;
+}
+
+.nav-toggle-label span::after {
+  top: 7px;
+}
+
+/* START: bigger screens */
+
+@media screen and (min-width: 800px) {
+  .nav-toggle-label {
+    display: none;
+  }
+
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto minmax(600px, 3fr) 1fr;
+  }
+  .logo {
+    grid-column: 2 / 3;
+  }
+  nav {
+    all: unset;
+    grid-column: 3/4;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  nav ul {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  nav li {
+    margin-left: 3em;
+    margin-bottom: 0;
+  }
+  nav button {
+    opacity: 1;
+    position: relative;
+  }
+  nav button::before {
+    content: "";
+    display: block;
+    height: 2px;
+    background: yellow;
+    position: absolute;
+    bottom: -0.1em;
+    left: 0;
+    right: 0;
+    transform: scale(0, 1);
+    transition: transform ease-in-out 250ms;
+  }
+
+  nav button:hover::before {
+    transform: scale(1, 1);
+  }
+}
+
+/* END: for bigger screens */
+
+/* END: Navbar*/
+
+/* START: login page */
+
+body {
+  height: 100%;
+  width: 100%;
+  background-image: url("Leafes.jpg");
+  background-repeat: repeat;
+  background-size: auto;
+  position: absolute;
+  color: white;
+  font-family: "Spartan", serif;
+}
+
+input {
+  background: transparent;
+  color: white;
+  border: none;
+}
+
+.cards {
+  background-color: rgba(0, 10, 0, 0.6); /* Black w/opacity/see-through */
+  position: relative;
+  height: 70%;
+  /* width: 40%; */
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%);
+  margin-top: 10%;
+  height: auto;
+  overflow: hidden;
+  transition: 0.2s;
+  box-shadow: 0 0 5px 3px Black;
+}
+
+.login {
+  margin: auto;
+  /* width: 80%; */
+}
+
+.register {
+  margin: auto;
+  /* width: 80%; */
+  display: none;
+}
+
+.button-box {
+  width: 220px;
+  display: block;
+  margin: 0 auto;
+  margin-top: 20px;
+
+  position: relative;
+  border-radius: 30px;
+  display: flex;
+  justify-content: space-around;
+
+  box-shadow: 0 0 5px 3px Black;
+}
+
+.toggle-btn {
+  color: white;
+  width: 100px;
+  padding: 5px 10px;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  outline: none;
+  position: relative;
+}
+
+#btn {
+  top: 0;
+  right: 0;
+  left: 0%;
+  position: absolute;
+  width: 110px;
+  height: 100%;
+  background: gray;
+  border-radius: 30px;
+  transition: 0.4s;
+}
+
+/* END:Login page */
+
+/* START: Personal Page */
+
+/* BIG SCREEN */
+.wrapper {
+  display: grid;
+  grid-template-areas: "userinfo postmessage account browseuser";
+
+  margin-top: 6rem;
+}
+
+.personalinfo {
+  grid-area: userinfo;
+}
+
+.message {
+  grid-area: postmessage;
+}
+
+.browse {
+  grid-area: browseuser;
+}
+
+.account {
+  grid-area: account;
+}
+
+.cards2 {
+  background-color: rgba(0, 10, 0, 0.6); /* Black w/opacity/see-through */
+  position: relative;
+  margin: 30px;
+  padding: 10px;
+  height: auto;
+  transition: 0.2s;
+  box-shadow: 0 0 5px 3px Black;
+}
+
+/* mediaQueries */
+
+/* For tablets */
+
+@media (max-width: 850px) {
+  .wrapper {
+    display: grid;
+    grid-template-areas:
+      "userinfo postmessage"
+      "account browseuser";
+  }
+}
+
+/* for mobile */
+
+@media (max-width: 600px) {
+  .wrapper {
+    display: grid;
+    grid-template-areas:
+      "userinfo "
+      "postmessage"
+      "account"
+      "browseuser";
+  }
+}

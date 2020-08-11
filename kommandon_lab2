@@ -1,0 +1,24 @@
+
+
+Gjorde ett bash-skript som ligger i ~ (eftersom man inte behöver byta mapp innan man kan köra det då, mappbytet ingår i skriptet), det heter start.sh och körs med kommandot: 
+start bash.sh
+
+
+
+1) skapa virtuell miljö:
+virtualenv -p python3 virtenv  (virtenv är namnet på mappen som skapas)
+
+2)installera Flask i virtuella miljön: pip3 install flask
+
+3) Aktivera miljön:
+ cd Webbprogrammering/Twidder
+. virtenv/bin/activate
+
+4) starta servern:
+export FLASK_APP=server
+export FLASK_ENV=development
+flask run
+
+Development mode shows an interactive debugger whenever a page raises an exception, and restarts the server whenever you make changes to the code. You can leave it running and just reload the browser page as you follow the tutorial. (export FLASK_ENV=development)
+
+
