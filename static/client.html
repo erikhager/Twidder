@@ -103,7 +103,8 @@
     <nav>
       <ul>
         <button class="tablinks active" onclick="openView(event, 'Home')">My info</button>
-                <button class="tablinks" onclick="openView(event, 'Account')">Account</button>
+        <button class="tablinks active" onclick="openView(event, 'Status')">My status</button>
+        <button class="tablinks" onclick="openView(event, 'Account')">Account</button>
         <button class="tablinks" onclick="openView(event, 'Browse')">Browse</button>
 
         <button onclick="logOut()">Sign out</button>
@@ -129,8 +130,8 @@
         <p id="disp_email"></p>
       </div>
 
-      <div id="Home" class="home tabcontent cards2 message">
-      <h3>Post status</h3>
+      <div id="Status" class="home tabcontent cards2 message">
+      <h3>Update status</h3>
       <form action="javascript:postMsg(event);">
         <textarea placeholder="Type message" id="wall_msg"></textarea>
         <br>

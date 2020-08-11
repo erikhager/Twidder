@@ -140,6 +140,8 @@ function postMsgBrowse(event) {
       let res = JSON.parse(req.responseText);
       console.log(res);
 
+      console.log("din lokation");
+
       getBrowseMsg();
     } else if (this.status == 500) {
       console.log("postMsg2 500: something went wrong");
