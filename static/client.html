@@ -98,11 +98,11 @@
 
 
 <header>
-  <button class="logo"  onclick="openView(event, 'Home')"><i class="material-icons md-64">whatshot</i></button>
+  <button class="logo"  onclick="home(event, 'Home')"><i class="material-icons md-64">whatshot</i></button>
   <input type="checkbox" id="nav-toggle" class="nav-toggle">
     <nav>
       <ul>
-        <button class="tablinks active" onclick="openView(event, 'Home')">Home</button>
+        <button class="tablinks active" onclick="openView(event, 'Home')">My info</button>
                 <button class="tablinks" onclick="openView(event, 'Account')">Account</button>
         <button class="tablinks" onclick="openView(event, 'Browse')">Browse</button>
 
@@ -130,7 +130,7 @@
       </div>
 
       <div id="Home" class="home tabcontent cards2 message">
-      <h3>Post message</h3>
+      <h3>Post status</h3>
       <form action="javascript:postMsg(event);">
         <textarea placeholder="Type message" id="wall_msg"></textarea>
         <br>

@@ -407,6 +407,26 @@ function openView(evt, ViewName) {
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
   }
-  document.getElementById(ViewName).style.display = "block";
+  document.getElementById(ViewName).style.display = "grid";
+
+  var all = document.getElementsByClassName("wrapper");
+  for (var i = 0; i < all.length; i++) {
+    all[i].style.gridTemplateAreas =
+      '"userinfo" "postmessage" "account" "browseuser"';
+  }
+
   evt.currentTarget.className += " active";
+}
+
+function home(evt, ViewName) {
+  var all = document.getElementsByClassName("wrapper");
+  for (var i = 0; i < all.length; i++) {
+    all[i].style.gridTemplateAreas =
+      '"userinfo postmessage account browseuser"';
+  }
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "grid";
+  }
 }

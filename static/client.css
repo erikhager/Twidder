@@ -321,3 +321,14 @@ input {
       "browseuser";
   }
 }
+
+@media (max-width: 600px) {
+  .wrapper {
+    display: grid;
+    grid-template-areas:
+      "userinfo "
+      "postmessage"
+      "account"
+      "browseuser";
+  }
+}
