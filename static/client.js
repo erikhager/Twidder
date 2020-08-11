@@ -216,14 +216,6 @@ function getBrowseMsg() {
   req.send();
 }
 
-// function getBrowseMsg() {
-//   let msg = serverstub.getUserMessagesByEmail(tokenGlobal, searchedEmail).data;
-//   document.getElementById("browse_post").innerHTML = null;
-//   for (i = 0; i < msg.length; i++) {
-//     document.getElementById("browse_post").innerHTML += "<p><b>" + msg[i].writer + ":</b>" + "<br>" + msg[i].content + "<br></p>";
-//   }
-// }
-
 function browseUser(event) {
   searchedEmail = document.getElementById("browse_user").value;
   let req = new XMLHttpRequest();
@@ -265,6 +257,8 @@ function browseUser(event) {
   req.send();
 }
 
+//displays the information about the user on a card.
+
 function persInfo() {
   let req = new XMLHttpRequest();
   req.onreadystatechange = function () {
@@ -290,6 +284,8 @@ function persInfo() {
 
   req.send();
 }
+
+//changes the password for the user.
 
 function changePsw(event) {
   var old_psw, new_psw1, new_psw2;
@@ -330,9 +326,6 @@ function changePsw(event) {
   req.send(
     JSON.stringify({ token: tokenGlobal, old_psw: old_psw, new_psw: new_psw1 })
   );
-  // req.setRequestHeader('Authorization', tokenGlobal);
-  // req.send(JSON.stringify({'old_psw' : old_psw,
-  // 'new_psw' : new_psw}));
 }
 
 //function started by onclick submit btn
@@ -390,12 +383,7 @@ function submitRegistration(event) {
   }
 }
 
-//function startView() {
-
-//document.getElementById('Home').style.display = "block";
-
-//}
-//startView();
+//Shows the correct content when selected from the tab many.
 
 function openView(evt, ViewName) {
   var i, tabcontent, tablinks;
@@ -417,6 +405,8 @@ function openView(evt, ViewName) {
 
   evt.currentTarget.className += " active";
 }
+
+//Brings you home when you click the flame icon.
 
 function home(evt, ViewName) {
   var all = document.getElementsByClassName("wrapper");
