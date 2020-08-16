@@ -1,5 +1,5 @@
 var tokenGlobal = 1;
-
+""
 function register() {
   var z = document.getElementById("btn");
   var x = document.getElementById("login");
