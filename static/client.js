@@ -109,6 +109,67 @@ function postMsg() {
   req.send(null);
 }
 
+function showLocation(position) {
+  var latitude = position.coords.latitude;
+  var longitude = position.coords.longitude;
+  alert("Latitude : " + latitude + " Longitude: " + longitude);
+}
+
+function errorHandler(err) {
+  if (err.code == 1) {
+    alert("Error: Access is denied!");
+  } else if (err.code == 2) {
+    alert("Error: Position is unavailable!");
+  }
+}
+
+function getLocation() {
+  if (navigator.geolocation) {
+    // timeout at 60000 milliseconds (60 seconds)
+    var options = { timeout: 60000 };
+    navigator.geolocation.getCurrentPosition(
+      showLocation,
+      errorHandler,
+      options
+    );
+  } else {
+    alert("Sorry, browser does not support geolocation!");
+  }
+}
+
+function getposition() {
+  const KEY = "AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
+  var longitude;
+  var latitude;
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      console.log(position.coords);
+      latitude = position.coords.latitude;
+
+      longitude = position.coords.longitude;
+      console.log(latitude);
+      console.log(longitude);
+      let url =
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+        latitude +
+        "," +
+        longitude +
+        "&key=AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
+
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          var position = data.response.plus_code.compound_code;
+          console.log(position);
+        })
+        .catch((err) => console.warn(err.message));
+    });
+  } else {
+    console.error("Geolocation is not supported by this browser!");
+  }
+}
+
 function postMsg2(email) {
   let email1 = email;
   console.log(email1);
@@ -123,13 +184,16 @@ function postMsg2(email) {
       console.log("postMsg2 500: something went wrong");
     }
   };
+
+  let position = getposition();
+  console.log(position);
+
   let message = document.getElementById("wall_msg").value;
   req.open("POST", "/user/postmessage", true);
   req.setRequestHeader("Content-type", "application/json");
   req.send(
     JSON.stringify({ token: tokenGlobal, email: email, message: message })
   );
-  // getMsg();
 }
 
 function postMsgBrowse(event) {
@@ -139,8 +203,6 @@ function postMsgBrowse(event) {
     if (this.readyState == 4 && this.status == 200) {
       let res = JSON.parse(req.responseText);
       console.log(res);
-
-      console.log("din lokation");
 
       getBrowseMsg();
     } else if (this.status == 500) {
