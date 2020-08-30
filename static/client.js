@@ -1,5 +1,5 @@
 var tokenGlobal = 1;
-""
+
 function register() {
   var z = document.getElementById("btn");
   var x = document.getElementById("login");
@@ -33,10 +33,16 @@ function loadView() {
   }
 }
 
+function createHash(param){	
+  let hash = CryptoJS.SHA512(param + tokenGlobal);	
+  return hash;	
+}	
+
+
 function logIn() {
   var email = document.getElementById("login_email").value;
   var password = document.getElementById("login_password").value;
-
+  let hashedPsw;
   let req = new XMLHttpRequest();
 
   req.onreadystatechange = function () {
@@ -48,6 +54,7 @@ function logIn() {
         tokenGlobal = localStorage.getItem("token");
         let view = document.getElementById("profileview").innerHTML;
         document.getElementById("display_view").innerHTML = view;
+        hashedPsw = createHash(password);
 
         persInfo();
         // getMsg();
@@ -64,7 +71,7 @@ function logIn() {
   };
   req.open("POST", "/user/signin", true);
   req.setRequestHeader("Content-type", "application/json; charset=utf-8");
-  req.send(JSON.stringify({ email: email, password: password }));
+  req.send(JSON.stringify({ email: email, password: hashedPsw }));
 }
 
 // No call for this function yet
