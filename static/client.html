@@ -25,19 +25,19 @@
 
   <div class="button-box">
     <div id="btn"></div>
-    <button type="button" class="toggle-btn" onclick="login()">Log in</button>
-    <button type="button" class="toggle-btn" onclick="register()">Register</button>
+    <button type="button" id="login_btn" class="toggle-btn" onclick="login()">Log in</button>
+    <button type="button" id="register_btn" class="toggle-btn" onclick="register()">Register</button>
   </div>
 
 
       <form action="javascript:logIn();" class="w3-container login w3-animate-left" id="login" >
         <br>
         <br>
-        <input type="email" placeholder="Email" class="w3-input w3-animate-input" id="login_email" name="email" required>
+        <input type="email" id="login_email" placeholder="Email" class="w3-input w3-animate-input"  name="email" required>
       <div class="div_input">
-        <input type="password" placeholder="Password" class="w3-input w3-animate-input" id="login_password" name="pwd" minlength="4" required>
+        <input type="password" id="login_password" placeholder="Password" class="w3-input w3-animate-input" name="pwd" minlength="4" required>
         </div>
-        <input type="submit" class="w3-block w3-border w3-margin-top w3-button" value="Enter">
+        <input type="submit" id="login_enter" class="w3-block w3-border w3-margin-top w3-button" value="Enter">
         <p id ="login_res"></p>
       </form>
 
@@ -107,7 +107,7 @@
         <button class="tablinks" onclick="openView(event, 'Account')">Account</button>
         <button class="tablinks" onclick="openView(event, 'Browse')">Browse</button>
 
-        <button onclick="logOut()">Sign out</button>
+        <button onclick="logOut()" id="logout">Sign out</button>
       </ul>
     </nav>
   <label for="nav-toggle" class="nav-toggle-label">

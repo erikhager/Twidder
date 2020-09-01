@@ -33,16 +33,9 @@ function loadView() {
   }
 }
 
-function createHash(param){	
-  let hash = CryptoJS.SHA512(param + tokenGlobal);	
-  return hash;	
-}	
-
-
 function logIn() {
   var email = document.getElementById("login_email").value;
   var password = document.getElementById("login_password").value;
-  let hashedPsw;
   let req = new XMLHttpRequest();
 
   req.onreadystatechange = function () {
@@ -54,7 +47,6 @@ function logIn() {
         tokenGlobal = localStorage.getItem("token");
         let view = document.getElementById("profileview").innerHTML;
         document.getElementById("display_view").innerHTML = view;
-        hashedPsw = createHash(password);
 
         persInfo();
         // getMsg();
@@ -71,7 +63,7 @@ function logIn() {
   };
   req.open("POST", "/user/signin", true);
   req.setRequestHeader("Content-type", "application/json; charset=utf-8");
-  req.send(JSON.stringify({ email: email, password: hashedPsw }));
+  req.send(JSON.stringify({ email: email, password: password }));
 }
 
 // No call for this function yet
@@ -391,7 +383,6 @@ function changePsw(event) {
     document.getElementById("change_psw").innerHTML =
       "New passwords doesn't match";
   }
-
   req.open("POST", "/user/changepassword", true);
   req.setRequestHeader("Content-type", "application/json; charset=utf-8");
   req.send(
