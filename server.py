@@ -3,7 +3,8 @@ from uuid import uuid4
 from gevent.pywsgi import WSGIServer
 import database_helper
 import json
-
+import http.client, urllib.parse
+import requests
 
 app = Flask(__name__)
 
@@ -150,21 +151,34 @@ def get_user_messages_by_token():
 
 @app.route('/user/postmessage', methods = ['POST'])
 def post_message():
-    user = request.get_json()
-    sender_token = user['token']
-    receiver_email = user['email']
-    message = user['message']
-    sender_email = database_helper.get_email_from_token(sender_token)
-    logged_in = database_helper.get_email_from_token(sender_token)
-    if logged_in:
-        user_exist = database_helper.get_email_from_email(receiver_email)
-        if user_exist:
-            database_helper.post_msg(sender_email, receiver_email, message)
-            return {"success": True, "message": "Message posted"}, 200
-        else:
-            return {"success": False, "message": "User doesn't exist."}, 404
-    else:
-        return {"success": False, "message": "You are not signed in."}, 404
+  user = request.get_json()
+  sender_token = user['token']
+  receiver_email = user['email']
+  message = user['message']
+  print("här2")
+  print(user['lat'])
+  latitude = user['lat']
+  latitude = round(latitude, 4)
+  longitude = user['longi']
+  longitude = round(longitude, 4)
+  sender_email = database_helper.get_email_from_token(sender_token)
+  logged_in = database_helper.get_email_from_token(sender_token)
+  if logged_in:
+      user_exist = database_helper.get_email_from_email(receiver_email)
+      if user_exist:
+          url_link = f"https://geocode.xyz/{latitude},{longitude}?json=1&auth=294896283791180911921x127548"
+          resp = requests.get(url_link)
+          json = resp.json()
+          print("här")
+          print(json)
+          city = json['city']
+
+          database_helper.post_msg(sender_email, receiver_email, message, city)
+          return {"success": True, "message": "Message posted"}, 200
+      else:
+          return {"success": False, "message": "User doesn't exist."}, 404
+  else:
+      return {"success": False, "message": "You are not signed in."}, 404
 
 if __name__ == '__main__':
     #app.run()

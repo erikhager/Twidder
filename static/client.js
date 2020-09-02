@@ -21,7 +21,7 @@ function login() {
 function loadView() {
   let token = localStorage.getItem("token");
   if (token == null) {
-    console.log("Welcome view success");
+   // console.log("Welcome view success");
     let view = document.getElementById("welcomeview").innerHTML;
     document.getElementById("display_view").innerHTML = view;
   } else {
@@ -29,6 +29,7 @@ function loadView() {
     let view = document.getElementById("profileview").innerHTML;
     document.getElementById("display_view").innerHTML = view;
     persInfo();
+    window.history.back();
     // getMsg();
   }
 }
@@ -100,7 +101,7 @@ function postMsg() {
       email = res.data.email;
       postMsg2(email);
     } else if (this.status == 500) {
-      console.log("2something went wrong");
+      console.log("something went wrong");
     }
   };
   req.open("GET", "/user/getuserdatabytoken", true);
@@ -136,44 +137,53 @@ function getLocation() {
   }
 }
 
-function getposition() {
-  const KEY = "AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
-  var longitude;
-  var latitude;
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition((position) => {
-      console.log(position.coords);
-      latitude = position.coords.latitude;
+// function getposition() {
+//   const KEY = "AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
+//   let longitude;
+//   let latitude;
+//   if (navigator.geolocation) {
+//     navigator.geolocation.getCurrentPosition((position) => {
+//       console.log(position.coords);
+//       latitude = position.coords.latitude;
+//       longitude = position.coords.longitude;
+//       let foo = [latitude, longitude];
+//       console.log("foo");
+//       console.log(foo);
+//       return foo;
 
-      longitude = position.coords.longitude;
-      console.log(latitude);
-      console.log(longitude);
-      let url =
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-        latitude +
-        "," +
-        longitude +
-        "&key=AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
 
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          var position = data.response.plus_code.compound_code;
-          console.log(position);
-        })
-        .catch((err) => console.warn(err.message));
-    });
-  } else {
-    console.error("Geolocation is not supported by this browser!");
-  }
-}
+
+      // console.log(latitude);
+      // console.log(longitude);
+      // let url =
+      //   "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+      //   latitude +
+      //   "," +
+      //   longitude +
+      //   "&key=AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
+
+      // fetch(url)
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     console.log(data);
+      //     var position = data.response.plus_code.compound_code;
+      //     console.log(position); 
+      //   })
+      //   .catch((err) => console.warn(err.message));
+
+
+
+//     });
+//   } else {
+//     console.error("Geolocation is not supported by this browser!");
+//   }
+// }
 
 function postMsg2(email) {
   let email1 = email;
   console.log(email1);
   let req = new XMLHttpRequest();
-
+  console.log()
   req.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       let res = JSON.parse(req.responseText);
@@ -184,15 +194,41 @@ function postMsg2(email) {
     }
   };
 
-  let position = getposition();
-  console.log(position);
+  // let position = getposition();
+  // console.log("position");
 
-  let message = document.getElementById("wall_msg").value;
-  req.open("POST", "/user/postmessage", true);
-  req.setRequestHeader("Content-type", "application/json");
-  req.send(
-    JSON.stringify({ token: tokenGlobal, email: email, message: message })
-  );
+  // Get local coordinates
+  const KEY = "AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
+  let longitude;
+  let latitude;
+  if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+      latitude = position.coords.latitude;
+      longitude = position.coords.longitude;      
+      let message = document.getElementById("wall_msg").value;
+      req.open("POST", "/user/postmessage", true);
+      req.setRequestHeader("Content-type", "application/json");
+      console.log("här")
+      console.log(latitude)
+      console.log(JSON.stringify({ token: tokenGlobal, email: email, message: message, lat: latitude, longi: longitude }))
+      req.send(
+        JSON.stringify({ token: tokenGlobal, email: email, message: message, lat: latitude, longi: longitude })
+      );
+
+    });
+  } else {
+    console.error("Geolocation is not supported by this browser!");
+  }
+
+  // let message = document.getElementById("wall_msg").value;
+  // req.open("POST", "/user/postmessage", true);
+  // req.setRequestHeader("Content-type", "application/json");
+  // console.log("här")
+  // console.log(latitude)
+  // console.log(JSON.stringify({ token: tokenGlobal, email: email, message: message, lat: latitude, longi: longitude }))
+  // req.send(
+  //   JSON.stringify({ token: tokenGlobal, email: email, message: message, lat: latitude, longi: longitude })
+  // );
 }
 
 function postMsgBrowse(event) {
@@ -208,15 +244,32 @@ function postMsgBrowse(event) {
       console.log("postMsg2 500: something went wrong");
     }
   };
-  req.open("POST", "/user/postmessage", true);
-  req.setRequestHeader("Content-type", "application/json");
-  req.send(
-    JSON.stringify({
-      token: tokenGlobal,
-      email: searchedEmail,
-      message: message,
-    })
-  );
+
+  const KEY = "AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
+  let longitude;
+  let latitude;
+  if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+      latitude = position.coords.latitude;
+      longitude = position.coords.longitude;      
+      req.open("POST", "/user/postmessage", true);
+      req.setRequestHeader("Content-type", "application/json");
+      req.send(
+        JSON.stringify({
+          token: tokenGlobal,
+          email: searchedEmail,
+          message: message,
+          lat: latitude, 
+          longi: longitude
+        })
+      );
+    });
+  } else {
+    console.error("Geolocation is not supported by this browser!");
+  }
+
+
+
 }
 
 function getMsg() {
@@ -238,6 +291,8 @@ function getMsg() {
           ":</b>" +
           "<br>" +
           msg.data[i].content +
+          "<br>" +
+          msg.data[i].city
           "<br></p>";
       }
     } else if (this.status == 500) {
@@ -267,6 +322,8 @@ function getBrowseMsg() {
           ":</b>" +
           "<br>" +
           msg.data[i].content +
+          "<br>" +
+          msg.data[i].city
           "<br></p>";
       }
     } else if (this.status == 500) {

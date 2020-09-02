@@ -24,6 +24,7 @@ Create table Message(
   id integer primary key autoincrement,
   email_sender varchar(36),
   message varchar(1000),
-  email_receiver varchar(35));
+  email_receiver varchar(35),
+  city varchar(300));
 
   /*insert into User values("sdfsd", "sfs", "sdfsf", "fsdfsfd", "dfgdsg", "sgsdfg", "dsfds");

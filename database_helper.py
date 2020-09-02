@@ -110,7 +110,7 @@ def get_user_data_by_email_helper(email):
 
 def get_messages_by_email_helper(email):
     db = get_db()
-    messages = db.execute('Select email_sender, message from Message where email_receiver = ?', [email])
+    messages = db.execute('Select email_sender, message, city from Message where email_receiver = ?', [email])
     match = messages.fetchall()
     messages.close()
     if not match:
@@ -121,13 +121,13 @@ def get_messages_by_email_helper(email):
         #return str(match)
         for i in range(len(match)):
             #writer = get_email_from_token(match[i][0])
-            dict = {"writer": match[i][0], "content": match[i][1]}
+            dict = {"writer": match[i][0], "content": match[i][1], "city": match[i][2]}
             msg_list.update({i : dict})
             #msg_list.append(dict)
         #return str(msg_list)
         return msg_list
-def post_msg(sender_email, reciever_email, message):
-    get_db().execute('insert into Message values(?, ?, ?, ?);', [None, sender_email, message, reciever_email])
+def post_msg(sender_email, reciever_email, message, city):
+    get_db().execute('insert into Message values(?, ?, ?, ?, ?);', [None, sender_email, message, reciever_email, city])
     get_db().commit()
 
 def sign_out(token):
