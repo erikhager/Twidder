@@ -133,3 +133,7 @@ def post_msg(sender_email, reciever_email, message, city):
 def sign_out(token):
     get_db().execute('delete from Logged_in_user where token = ?', [token])
     get_db().commit()
+
+def sign_out_email(email):
+    get_db().execute('delete from Logged_in_user where email = ?', [email])
+    get_db().commit()

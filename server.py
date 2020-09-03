@@ -1,14 +1,19 @@
 from flask import Flask, request, jsonify, send_from_directory
 from uuid import uuid4
 from gevent.pywsgi import WSGIServer
+# nytt
+from geventwebsocket.handler import WebSocketHandler
+from geventwebsocket import WebSocketError
+# nytt
 import database_helper
 import json
-import http.client, urllib.parse
 import requests
 
 app = Flask(__name__)
-
 app.debug = True
+# nytt
+active_sockets = dict()
+# nytt
 
 @app.route('/')
 def hello():
@@ -28,11 +33,26 @@ def sign_in():
     stored_psw = database_helper.get_password_from_email(email)
     if str(stored_psw) == password:
         if not database_helper.logged_in(email):
+          #anropa WebSocket
+            rand_token = str(uuid4())
+            database_helper.store_token(rand_token, email)
+            print("röd1")
+            return {"success": True, "message": "Successfully signed in.", "data": rand_token}, 200;
+        else:
+            print("röd2")
+            print(user['email'])
+            print(active_sockets.keys())
+            if email in active_sockets.keys():
+                        print("röd3")
+                        ws = active_sockets[email]
+                        print(ws)
+                        ws.send(json.dumps({"success": False, "message": "Logged out"}))
+                        del active_sockets[email]
+                        print(active_sockets.keys())
+                        database_helper.sign_out_email(email)
             rand_token = str(uuid4())
             database_helper.store_token(rand_token, email)
             return {"success": True, "message": "Successfully signed in.", "data": rand_token}, 200;
-        else:
-            return {"success": False, "message": "User already logged in."}, 404;
     else:
         return {"success": False, "message": "Wrong password or email"}, 404;
 
@@ -172,7 +192,6 @@ def post_message():
           print("här")
           print(json)
           city = json['city']
-
           database_helper.post_msg(sender_email, receiver_email, message, city)
           return {"success": True, "message": "Message posted"}, 200
       else:
@@ -180,7 +199,41 @@ def post_message():
   else:
       return {"success": False, "message": "You are not signed in."}, 404
 
+# Syftet med webscockets är att förbättra user experience. I detta fall kollas det
+# om en användare loggas in på en annan enhet. Isåfall loggas användaren ut på den tidigare
+# enheten vilket gör att den inte kan hamna i situationen att man t.ex. skriver en text i tron att man
+# är inloggad men när man trycker på sänd visar det sig att man inte var inloggad och att all data man skrivit förloras
+# Ett annat exempel på user experience är att det kan användas till pushnotiser
+@app.route('/api')
+def websocket():
+    print("här")
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        print(ws)
+        try:
+            data = ws.receive()
+            email = database_helper.get_email_from_token(data)
+        except WebSocketError as e:
+            print(e)
+        if not data:
+            ws.send({"success": False, "message": "You are not signed in."})
+            ws.close
+        else:
+            try:
+                if email in active_sockets:
+                    active_sockets[email].close()
+                active_sockets[email] = ws
+
+                while True:
+                    data = ws.receive()
+
+            except WebSocketError as e:
+			             repr(e)
+			             del active_sockets[data[email]]
+# Return finns med men ska aldrig ske.
+    return ''
+
 if __name__ == '__main__':
     #app.run()
-    http_server = WSGIServer(('', 5000), app)
+    http_server = WSGIServer(('', 5000), app, handler_class = WebSocketHandler)
     http_server.serve_forever()

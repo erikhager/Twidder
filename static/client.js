@@ -29,10 +29,42 @@ function loadView() {
     let view = document.getElementById("profileview").innerHTML;
     document.getElementById("display_view").innerHTML = view;
     persInfo();
-    window.history.back();
     // getMsg();
   }
 }
+
+function connectWebsocket(){
+  //if ("WebSocket" in window) {
+  let url = "ws://" + document.domain + ":5000/api";
+  let ws = new WebSocket(url);
+console.log("Websocket start");
+  ws.onopen = function(){
+    console.log("Websocket onopen");
+    ws.send(tokenGlobal)
+  }
+
+  ws.onmessage = function(msg){
+    console.log("Websocket onopen");
+    console.log(msg);
+    let res = JSON.parse(msg.data);
+    if (res.success == false) {
+      console.log(res.message);
+      localStorage.removeItem("token");
+      let view = document.getElementById("welcomeview").innerHTML;
+      document.getElementById("display_view").innerHTML = view;
+    }
+  }
+
+  ws.onclose = function(){
+      console.log("WebSocket closed");
+    };
+
+  ws.onerror = function(){
+      console.log("Websocket error");
+    };
+
+}
+
 
 function logIn() {
   var email = document.getElementById("login_email").value;
@@ -50,6 +82,7 @@ function logIn() {
         document.getElementById("display_view").innerHTML = view;
 
         persInfo();
+        connectWebsocket();
         // getMsg();
         //  } else {
         //  console.log("This browser needs to be updated or have no support for this application.")
@@ -484,6 +517,7 @@ function submitRegistration(event) {
           document.getElementById("display_view").innerHTML = view;
           persInfo();
           getMsg();
+          connectWebsocket();
         } else if (this.status == 500) {
           console.log("something went wrong: 500");
         } else {
