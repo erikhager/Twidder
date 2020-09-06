@@ -33,7 +33,7 @@ function loadView() {
 }
 
 function connectWebsocket(){
-  let url = "ws://twidder-1337.herokuapp.com/api";
+  let url = "wss://twidder-1337.herokuapp.com/api";
  // let url = "ws://" + document.domain + ":5000/api";
   let ws = new WebSocket(url);
   console.log("Websocket start");
