@@ -21,7 +21,6 @@ function login() {
 function loadView() {
   let token = localStorage.getItem("token");
   if (token == null) {
-   // console.log("Welcome view success");
     let view = document.getElementById("welcomeview").innerHTML;
     document.getElementById("display_view").innerHTML = view;
   } else {
@@ -34,10 +33,9 @@ function loadView() {
 }
 
 function connectWebsocket(){
-  //if ("WebSocket" in window) {
   let url = "ws://" + document.domain + ":5000/api";
   let ws = new WebSocket(url);
-console.log("Websocket start");
+  console.log("Websocket start");
   ws.onopen = function(){
     console.log("Websocket onopen");
     ws.send(tokenGlobal)
@@ -55,9 +53,11 @@ console.log("Websocket start");
     }
   }
 
+
   ws.onclose = function(){
       console.log("WebSocket closed");
     };
+
 
   ws.onerror = function(){
       console.log("Websocket error");
@@ -100,7 +100,7 @@ function logIn() {
   req.send(JSON.stringify({ email: email, password: password }));
 }
 
-// No call for this function yet
+// Called on click from HTML
 function logOut() {
   let req = new XMLHttpRequest();
   req.onreadystatechange = function () {
@@ -142,76 +142,6 @@ function postMsg() {
   req.send(null);
 }
 
-function showLocation(position) {
-  var latitude = position.coords.latitude;
-  var longitude = position.coords.longitude;
-  alert("Latitude : " + latitude + " Longitude: " + longitude);
-}
-
-function errorHandler(err) {
-  if (err.code == 1) {
-    alert("Error: Access is denied!");
-  } else if (err.code == 2) {
-    alert("Error: Position is unavailable!");
-  }
-}
-
-function getLocation() {
-  if (navigator.geolocation) {
-    // timeout at 60000 milliseconds (60 seconds)
-    var options = { timeout: 60000 };
-    navigator.geolocation.getCurrentPosition(
-      showLocation,
-      errorHandler,
-      options
-    );
-  } else {
-    alert("Sorry, browser does not support geolocation!");
-  }
-}
-
-// function getposition() {
-//   const KEY = "AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
-//   let longitude;
-//   let latitude;
-//   if (navigator.geolocation) {
-//     navigator.geolocation.getCurrentPosition((position) => {
-//       console.log(position.coords);
-//       latitude = position.coords.latitude;
-//       longitude = position.coords.longitude;
-//       let foo = [latitude, longitude];
-//       console.log("foo");
-//       console.log(foo);
-//       return foo;
-
-
-
-      // console.log(latitude);
-      // console.log(longitude);
-      // let url =
-      //   "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-      //   latitude +
-      //   "," +
-      //   longitude +
-      //   "&key=AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
-
-      // fetch(url)
-      //   .then((response) => response.json())
-      //   .then((data) => {
-      //     console.log(data);
-      //     var position = data.response.plus_code.compound_code;
-      //     console.log(position); 
-      //   })
-      //   .catch((err) => console.warn(err.message));
-
-
-
-//     });
-//   } else {
-//     console.error("Geolocation is not supported by this browser!");
-//   }
-// }
-
 function postMsg2(email) {
   let email1 = email;
   console.log(email1);
@@ -227,11 +157,7 @@ function postMsg2(email) {
     }
   };
 
-  // let position = getposition();
-  // console.log("position");
-
   // Get local coordinates
-  const KEY = "AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
   let longitude;
   let latitude;
   if (navigator.geolocation) {
@@ -252,16 +178,6 @@ function postMsg2(email) {
   } else {
     console.error("Geolocation is not supported by this browser!");
   }
-
-  // let message = document.getElementById("wall_msg").value;
-  // req.open("POST", "/user/postmessage", true);
-  // req.setRequestHeader("Content-type", "application/json");
-  // console.log("här")
-  // console.log(latitude)
-  // console.log(JSON.stringify({ token: tokenGlobal, email: email, message: message, lat: latitude, longi: longitude }))
-  // req.send(
-  //   JSON.stringify({ token: tokenGlobal, email: email, message: message, lat: latitude, longi: longitude })
-  // );
 }
 
 function postMsgBrowse(event) {
@@ -271,14 +187,12 @@ function postMsgBrowse(event) {
     if (this.readyState == 4 && this.status == 200) {
       let res = JSON.parse(req.responseText);
       console.log(res);
-
       getBrowseMsg();
     } else if (this.status == 500) {
       console.log("postMsg2 500: something went wrong");
     }
   };
 
-  const KEY = "AIzaSyBf98kwwsQhaLEMOTG43JhXqsPTbCLOpqk";
   let longitude;
   let latitude;
   if (navigator.geolocation) {
@@ -300,9 +214,6 @@ function postMsgBrowse(event) {
   } else {
     console.error("Geolocation is not supported by this browser!");
   }
-
-
-
 }
 
 function getMsg() {
@@ -342,11 +253,9 @@ function getBrowseMsg() {
   req.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       let msg = JSON.parse(req.responseText);
-      //let msg = JSON.parse(res.data);
       console.log(msg.data[0].writer);
       console.log(msg.data);
       console.log(Object.keys(msg.data).length);
-      //  console.log(typeof msg);
       document.getElementById("browse_post").innerHTML = null;
       for (i = Object.keys(msg.data).length - 1; i > -1; i--) {
         document.getElementById("browse_post").innerHTML +=
@@ -369,6 +278,7 @@ function getBrowseMsg() {
   req.send();
 }
 
+
 function browseUser(event) {
   searchedEmail = document.getElementById("browse_user").value;
   let req = new XMLHttpRequest();
@@ -376,7 +286,6 @@ function browseUser(event) {
     if (this.readyState == 4 && this.status == 200) {
       let res = JSON.parse(req.responseText);
       console.log(res);
-      //    let res = serverstub.getUserDataByEmail(tokenGlobal, searchedEmail);
       if (res.success) {
         document.getElementById("browse_fail").innerHTML = null;
         document.getElementById("browse_res").style.display = null;
@@ -410,8 +319,8 @@ function browseUser(event) {
   req.send();
 }
 
-//displays the information about the user on a card.
 
+//displays the information about the user on a card.
 function persInfo() {
   let req = new XMLHttpRequest();
   req.onreadystatechange = function () {
@@ -431,15 +340,13 @@ function persInfo() {
       }
     }
   };
-
   req.open("GET", "/user/getuserdatabytoken", true);
   req.setRequestHeader("Authorization", tokenGlobal);
-
   req.send();
 }
 
-//changes the password for the user.
 
+//changes the password for the user.
 function changePsw(event) {
   var old_psw, new_psw1, new_psw2;
   old_psw = document.getElementById("old_psw").value;
@@ -448,7 +355,6 @@ function changePsw(event) {
   let req = new XMLHttpRequest();
   if (new_psw1 == new_psw2) {
     console.log("Password match");
-
     req.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         console.log("4 o 200");
@@ -456,7 +362,6 @@ function changePsw(event) {
         console.log(res);
         console.log("4o 200");
         // let res = serverstub.changePassword(tokenGlobal, old_psw, new_psw1);
-
         if (res.success) {
           document.getElementById("change_psw").innerHTML = null;
           document.getElementById("change_psw").innerHTML = res.message;
@@ -473,7 +378,7 @@ function changePsw(event) {
     document.getElementById("change_psw").innerHTML =
       "New passwords doesn't match";
   }
-  req.open("POST", "/user/changepassword", true);
+  req.open("PUT", "/user/changepassword", true);
   req.setRequestHeader("Content-type", "application/json; charset=utf-8");
   req.send(
     JSON.stringify({ token: tokenGlobal, old_psw: old_psw, new_psw: new_psw1 })
@@ -537,7 +442,6 @@ function submitRegistration(event) {
 }
 
 //Shows the correct content when selected from the tab many.
-
 function openView(evt, ViewName) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
@@ -560,7 +464,6 @@ function openView(evt, ViewName) {
 }
 
 //Brings you home when you click the flame icon.
-
 function home(evt, ViewName) {
   var all = document.getElementsByClassName("wrapper");
   for (var i = 0; i < all.length; i++) {

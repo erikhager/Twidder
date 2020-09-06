@@ -1,19 +1,16 @@
 from flask import Flask, request, jsonify, send_from_directory
 from uuid import uuid4
 from gevent.pywsgi import WSGIServer
-# nytt
 from geventwebsocket.handler import WebSocketHandler
 from geventwebsocket import WebSocketError
-# nytt
 import database_helper
 import json
 import requests
 
 app = Flask(__name__)
 app.debug = True
-# nytt
+
 active_sockets = dict()
-# nytt
 
 @app.route('/')
 def hello():
@@ -33,9 +30,9 @@ def sign_in():
     stored_psw = database_helper.get_password_from_email(email)
     if str(stored_psw) == password:
         if not database_helper.logged_in(email):
-          #anropa WebSocket
+          #anropa WebSocket (görs i Client.js)
             rand_token = str(uuid4())
-            database_helper.store_token(rand_token, email)
+            database_helper.store_logged_in_user(rand_token, email)
             print("röd1")
             return {"success": True, "message": "Successfully signed in.", "data": rand_token}, 200;
         else:
@@ -51,7 +48,7 @@ def sign_in():
                         print(active_sockets.keys())
                         database_helper.sign_out_email(email)
             rand_token = str(uuid4())
-            database_helper.store_token(rand_token, email)
+            database_helper.store_logged_in_user(rand_token, email)
             return {"success": True, "message": "Successfully signed in.", "data": rand_token}, 200;
     else:
         return {"success": False, "message": "Wrong password or email"}, 404;
@@ -60,7 +57,6 @@ def sign_in():
 @app.route('/user/signup', methods = ['POST'])
 def sign_up():
     user = request.get_json()
-
     email = user['email']
     password = user['password']
     firstname = user['firstname']
@@ -69,13 +65,11 @@ def sign_up():
     city = user['city']
     country = user['country']
     stored_user_email = database_helper.get_email_from_email(email)
-
     if not stored_user_email:
         database_helper.store_user(email, password, firstname, familyname, gender, city, country)
         rand_token = str(uuid4())
-        database_helper.store_token(rand_token, email)
-        return {"success": True, "message": "Successfully created new user.", "data": rand_token}, 200;
-
+        database_helper.store_logged_in_user(rand_token, email)
+        return {"success": True, "message": "Successfully created a new user.", "data": rand_token}, 200;
     else:
         return {"success": False, "message": "User Exist"}, 404
 
@@ -89,28 +83,24 @@ def sign_out():
     else:
         return {"success": False, "message": "You are not signed in."}, 404
 
-@app.route('/user/changepassword', methods = ['POST'])
+
+@app.route('/user/changepassword', methods = ['PUT'])
 def change_psw():
     user = request.get_json()
-
     token = user['token']
     old_psw = user['old_psw']
     new_psw = user['new_psw']
-
-    stored_old_password = database_helper.get_password_from_token(token)
-
-    if stored_old_password == old_psw:
+    stored_password = database_helper.get_password_from_token(token)
+    if stored_password == old_psw:
         email = database_helper.get_email_from_token(token)
         database_helper.change_psw(email, new_psw)
         return {"success": True, "message": "Password updated"}, 200
     else:
         return {"success": False, "message": "Wrong password"}, 404
 
+
 @app.route('/user/getuserdatabyemail', methods = ['GET'])
 def get_user_data_by_email():
-    #user = request.get_json()
-    #token = user['token']
-    #email = user['email']
     token = request.headers["Authorization"]
     email = request.headers["email"]
     logged_in = database_helper.get_email_from_token(token)
@@ -122,6 +112,7 @@ def get_user_data_by_email():
                 return {"success": True, "message": "User messages retrieved.", "data": {'email': user_details[0], 'firstname': user_details[1], 'familyname': user_details[2], 'gender': user_details[3], 'city': user_details[4], 'country': user_details[5]}}, 200
     else:
         return {"success": False, "message": "You are not signed in."}, 404
+
 
 @app.route('/user/getuserdatabytoken', methods = ['GET'])
 def get_user_data_by_token():
@@ -136,6 +127,7 @@ def get_user_data_by_token():
                 return {"success": False, "message": "No data found."}
             else:
                 return {"success": True, "message": "User messages retrieved.", "data": {'email': user_details[0], 'firstname': user_details[1], 'familyname': user_details[2], 'gender': user_details[3], 'city': user_details[4], 'country': user_details[5]}}
+
 
 @app.route('/user/getusermessagesbyemail', methods = ['GET'])
 def get_user_messages_by_email():
@@ -154,11 +146,10 @@ def get_user_messages_by_email():
     else:
         return {"success": False, "message": "You are not signed in."}, 404
 
+
 @app.route('/user/getusermessagesbytoken', methods = ['GET'])
 def get_user_messages_by_token():
     token = request.headers["Authorization"]
-    #user = request.get_json()
-    #token = user['token']
     email = database_helper.get_email_from_token(token)
     if not email:
         return {"success": False, "message": "You are not signed in."}, 404
@@ -168,6 +159,7 @@ def get_user_messages_by_token():
             return {"success": False, "message": "No messages found."}, 404
         else:
             return {"success": True, "message": "User messages retrieved.", "data": user_messages}, 200
+
 
 @app.route('/user/postmessage', methods = ['POST'])
 def post_message():
@@ -199,7 +191,8 @@ def post_message():
   else:
       return {"success": False, "message": "You are not signed in."}, 404
 
-# Syftet med webscockets är att förbättra user experience. I detta fall kollas det
+
+# Syftet med websockets är att förbättra user experience. I detta fall kollas det
 # om en användare loggas in på en annan enhet. Isåfall loggas användaren ut på den tidigare
 # enheten vilket gör att den inte kan hamna i situationen att man t.ex. skriver en text i tron att man
 # är inloggad men när man trycker på sänd visar det sig att man inte var inloggad och att all data man skrivit förloras
@@ -232,6 +225,7 @@ def websocket():
 			             del active_sockets[data[email]]
 # Return finns med men ska aldrig ske.
     return ''
+
 
 if __name__ == '__main__':
     #app.run()

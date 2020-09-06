@@ -3,23 +3,18 @@
 <head>
   <!-- <link rel="stylesheet" type="text/css" href="client.css"> -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Spartan">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="static/client.css">
-
-
-
   <script src="static/client.js"></script>
-
-
   <script type=”text/view” id="welcomeview">
+
   <title>Client</title>
 
 <div class="">
 
-  <section  class="form-container">
+  <section class="form-container">
   <div class="w3-container w3-col l4 w3-padding-16 w3-center cards w3-animate-opacity w3-card-3">
 
 
@@ -120,33 +115,27 @@
 <div class="wrapper">
 
 
-      <div id="Home" class="home tabcontent cards2 personalinfo">
-        <h3>User info</h3>
-        <p id="disp_fname"></p>
-        <p id="disp_lname"></p>
-        <p id="disp_gender"></p>
-        <p id="disp_city"></p>
-        <p id="disp_country"></p>
-        <p id="disp_email"></p>
-      </div>
+  <div id="Home" class="home tabcontent cards2 personalinfo">
+    <h3>User info</h3>
+    <p id="disp_fname"></p>
+    <p id="disp_lname"></p>
+    <p id="disp_gender"></p>
+    <p id="disp_city"></p>
+    <p id="disp_country"></p>
+    <p id="disp_email"></p>
+  </div>
 
-      <div id="Status" class="home tabcontent cards2 message">
-      <h3>Update status</h3>
-      <form action="javascript:postMsg(event);">
-        <textarea placeholder="Type message" id="wall_msg"></textarea>
-        <br>
-        <input class="w3-block w3-border w3-margin-top w3-button" type="submit" id="post btn" value="Post">
-        <br>
-      </form>
-      <button class="w3-block w3-border w3-margin-top w3-button" onclick="getMsg()">Reload messages</button>
-      <p id="post_msg"></p>
-      </div>
-
-
-
-
-
-
+  <div id="Status" class="home tabcontent cards2 message">
+  <h3>Update status</h3>
+  <form action="javascript:postMsg(event);">
+    <textarea placeholder="Type message" id="wall_msg"></textarea>
+    <br>
+    <input class="w3-block w3-border w3-margin-top w3-button" type="submit" id="post btn" value="Post">
+    <br>
+  </form>
+  <button class="w3-block w3-border w3-margin-top w3-button" onclick="getMsg()">Reload messages</button>
+  <p id="post_msg"></p>
+  </div>
 
 
   <div id="Browse" class="tabcontent cards2 browse">
@@ -199,7 +188,7 @@
     <p id ="change_psw"></p>
     </form>
   </div>
-  </div>
+</div>
 
 
   </script>

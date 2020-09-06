@@ -16,10 +16,6 @@ def disconnect_db():
         g.db.close()
         g.db = None
 
-
-
-
-
 def get_password_from_email(email):
     db = get_db()
     res = db.execute('Select password from User where email = ?', [email])
@@ -44,11 +40,10 @@ def get_password_from_token(token):
 
 def change_psw(email, new_psw):
     db = get_db()
-    db.execute('update User set password = ? where email = ?', [new_psw, email])
+    db.execute('update user set password = ? where email = ?', [new_psw, email])
     db.commit()
 
-
-def store_token(token, email):
+def store_logged_in_user(token, email):
     get_db().execute('insert into Logged_in_user values(?, ?);', [token, email])
     get_db().commit()
 
@@ -76,21 +71,9 @@ def get_email_from_token(token):
         email = str(email[0])
         return email
 
-def get_email_from_token(token):
-    db = get_db()
-    res = db.execute('Select email from Logged_in_user where token = ?', [token])
-    email = res.fetchone()
-    res.close()
-    if not email:
-        return False
-    else:
-        email = str(email[0])
-        return email
-
-
 def logged_in(email):
     db = get_db()
-    res = db.execute('Select * from Logged_in_user where email = ?', [email])
+    res = db.execute('Select email from Logged_in_user where email = ?', [email])
     match = res.fetchone()
     res.close()
     if not match:
@@ -116,16 +99,12 @@ def get_messages_by_email_helper(email):
     if not match:
         return False
     else:
-        #msg_list = []
         msg_list = {}
-        #return str(match)
         for i in range(len(match)):
-            #writer = get_email_from_token(match[i][0])
             dict = {"writer": match[i][0], "content": match[i][1], "city": match[i][2]}
             msg_list.update({i : dict})
-            #msg_list.append(dict)
-        #return str(msg_list)
         return msg_list
+        
 def post_msg(sender_email, reciever_email, message, city):
     get_db().execute('insert into Message values(?, ?, ?, ?, ?);', [None, sender_email, message, reciever_email, city])
     get_db().commit()
