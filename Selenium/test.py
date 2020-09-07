@@ -6,8 +6,8 @@ from datetime import date
 
 PATH = r"C:\Users\Oskar\Documents\Twidder\chromedriver.exe"
 driver = webdriver.Chrome(PATH)
-
-driver.get("http://localhost:5000/")
+#driver.get("http://localhost:5000/")
+driver.get("https://twidder--1337.herokuapp.com/")
 print(driver.title)
 
 # 1: Testing login with a too short password (expect to give error message)
